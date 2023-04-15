@@ -10,7 +10,13 @@ const getAllTasks =(req,res) => {
 };  
 
 const createTask= (req,res) => {
-    Task.create(req.body).then(task => {
+    const { task } = req.body;
+    const newtask = {
+        task: task,
+        userId: req.user
+    }
+
+    Task.create(newtask).then(task => {
         console.log(task);
         res.status(201).json({task})
     }).catch(err => {
