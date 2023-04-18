@@ -1,1 +1,0 @@
-#A To-Do List App with User Authentication and Validation:
