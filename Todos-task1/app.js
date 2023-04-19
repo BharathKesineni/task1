@@ -8,14 +8,44 @@ const multer = require("multer");
 const path = require("path");
 const session = require("express-session"); 
 
-// const MogoStore = require("connect-mongodb-session")(session);
+const MongoStore = require("connect-mongodb-session")(session);
+const app = express();
 
 const MongoUrl = "mongodb://127.0.0.1:27017/bharath";
 
+// mongoose.connect(MongoUrl,{
+//     useNewUrlParser:true,
+//     useCreateIndex:true,
+//     useUnifiedTopology:true
+// });
+
+const store = new MongoStore({
+    uri: MongoUrl,
+    collection: "sessions",
+  });
 
 
-
-const app = express();
+  app.use(
+    session({
+      secret: "key that will sign cookie",
+      resave: false,
+      saveUninitialized: false,
+      store: store,
+    })
+  );
+  app.use((req, res, next) => {
+    if (!req.session.user) {
+      return next();
+    }
+    User.findById(req.session.user._id)
+      .then((reqUser) => {
+        req.user = reqUser;
+        next();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 
 
 const fileStorageEngine = multer.diskStorage({
