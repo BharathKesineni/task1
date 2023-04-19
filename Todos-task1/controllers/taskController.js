@@ -1,7 +1,7 @@
 const Task = require("../models/Task");
 
 exports.getAllTasks =(req,res) => {
-    // console.log(req.user);
+    console.log(req.user);
     Task.find().then(tasks => {
         console.log('Tasks fetched')
         res.status(200).json({tasks});

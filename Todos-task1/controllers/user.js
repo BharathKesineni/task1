@@ -2,9 +2,19 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const nodemailer = require('nodemailer');
 // Load User model
 const User = require('../models/user');
 // const { forwardAuthenticated } = require('../config/auth');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'mailto:bharath.kesineni@brainvire.com',
+    pass: 'Brain@2023'
+  }
+});
+
 
 exports.register = (req, res) => {
 	console.log("Request: " + JSON.stringify(req.body));
@@ -49,7 +59,20 @@ exports.register = (req, res) => {
 			newUser
 				.save()
 				.then(user => {
-				
+					var mailOptions = {
+						from: 'mail to:bharath.kesineni@brainvire.com',
+						to: 'mail to: bharathkesineni@gmail.com',
+						subject: 'Sending Email using Node.js',
+						text: 'That was easy!'
+					  };
+					  
+					  transporter.sendMail(mailOptions, function(error, info){
+						if (error) {
+						  console.log(error);
+						} else {
+						  console.log('Email sent: ' + info.response);
+						}
+					  });
 				res.send("Register Successful");
 				})
 				.catch(err => console.log(err));

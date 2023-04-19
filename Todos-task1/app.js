@@ -3,15 +3,20 @@ const mongoose = require('mongoose');
 const tasksRoutes = require("./routes/tasks");
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
+const User = require('./models/user');
+const multer = require("multer");
+const path = require("path");
+const session = require("express-session"); 
+
+// const MogoStore = require("connect-mongodb-session")(session);
+
+const MongoUrl = "mongodb://127.0.0.1:27017/bharath";
+
+
 
 
 const app = express();
-const path = require("path");
-const multer = require("multer");
 
- 
-const User = require('./models/user');
-const bodyparser = require("body-parser");
 
 const fileStorageEngine = multer.diskStorage({
     destination:(req,file,cb) => {
@@ -26,10 +31,13 @@ const upload   = multer ({storage:fileStorageEngine});
 
 app.use(express.json());
 
+
+app.use(session({secret: "secret", resave: false, saveUninitialized: false}));
+
 app.use((req,res,next) => {
-    User.findOne({_id:'643d0b6ab2ade668851200f0'})
+    User.findOne({_id:'643d09ebc5a33f3211af594e'})
     .then(user => {
-        // console.log(user);
+        console.log(user);
         req.user = user;
         next()
     }).catch(err => console.log(err));
@@ -55,17 +63,17 @@ app.post("/single",upload.single('image'),(req,res) => {
 
 mongoose.connect('mongodb://127.0.0.1:27017/bharath')
 .then(() => {
-    User.findOne()
-    .then(user => {
-        // console.log(user);
-        if(!user) {
-            user = new User({
-                email: "bharath@gmail.com",
-                password: "101010"
-            })
-            user.save();
-        }
-    })
+    // User.findOne()
+    // .then(user => {
+    //     // console.log(user);
+    //     if(!user) {
+    //         user = new User({
+    //             email: "bharath@gmail.com",
+    //             password: "101010"
+    //         })
+    //         user.save();
+    //     }
+    // })
     console.log('db connected!!')
 })
 .catch( err => console.log(err))
