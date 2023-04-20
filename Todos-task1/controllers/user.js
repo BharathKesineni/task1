@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const passport = require('passport');
 const nodemailer = require('nodemailer');
 // Load User model
 const User = require('../models/user');
@@ -17,70 +16,34 @@ const transporter = nodemailer.createTransport({
 
 
 exports.register = (req, res) => {
-	console.log("Request: " + JSON.stringify(req.body));
-	const { email, password } = req.body;
-	let errors = [];
-
-	/* If condition to check whether all credentials are filled */
-	if (!email || !password) {
-	errors.push({ msg: 'Please enter all fields' });
-	}
-	
-
-	/* If condition to check in case password
-	length is greater than 3 or not */
-	if (password.length < 3) {
-	errors.push({ msg: 'Password must be at least 3 characters' });
-	}
-
-	if (errors.length > 0) {
-	res.send('register error')
-	} else {
-	
-	/* Checking if user exists */
-	User.findOne({ email: email }).then(user => {
+	const name = req.body.name;
+	const email = req.body.email;
+	const password = req.body.password;
+	User.findOne({email: email}).then(user => {
 		if (user) {
-		errors.push({ msg: 'Email already exists' });
-		res.send('register user exists');
+			res.send("E-mail already exist");
 		}
-		
-	/* Creating the user */
-	else {
-		const newUser = new User({
-			email,
-			password
-		});
-		
-		/* Bcrypt hashing the password for user privacy */
-		bcrypt.genSalt(10, (err, salt) => {
-			bcrypt.hash(newUser.password, salt, (err, hash) => {
-			if (err) throw err;
-			newUser.password = hash;
-			newUser
-				.save()
-				.then(user => {
-					var mailOptions = {
-						from: 'mail to:bharath.kesineni@brainvire.com',
-						to: 'mail to: bharathkesineni@gmail.com',
-						subject: 'Sending Email using Node.js',
-						text: 'That was easy!'
-					  };
-					  
-					  transporter.sendMail(mailOptions, function(error, info){
-						if (error) {
-						  console.log(error);
-						} else {
-						  console.log('Email sent: ' + info.response);
-						}
-					  });
-				res.send("Register Successful");
-				})
-				.catch(err => console.log(err));
-			});
-		});
-		}
-	});
-	}
+		bcrypt.hash(password, 12)
+		.then(hashPass => {
+			// console.log(hashPass);
+			const hashPassword = hashPass;
+			const user = new User({
+				name: name,
+				email: email,
+				password: hashPassword
+			})
+			return user.save();
+		})
+		.then(user => {
+			console.log(user);
+			res.send("User successfully Registred");
+		})
+		.catch(err => {
+			console.log(err);
+		})
+	}).catch(err => {
+		console.log(err)
+	})
 }
 
 // exports.login = (req, res, next) => {
@@ -107,21 +70,21 @@ exports.login = (req, res, next) => {
 	const password = req.body.password;
 	User.findOne({ email: email })
 	  .then((user) => {
-		// console.log(user);
+		// console.log(password);
 		if (!user) {
-		  return res.json({ msg: "Incorrect E-Mail!!!" });
+		  return res.json({ msg: "Incorrect email" });
 		}
 		bcrypt
 		  .compare(password, user.password)
 		  .then((match) => {
-			console.log(match);
+			// console.log(match);
 			if (match) {
 			  // req.session.isLogin = true;
 			  req.session.user = user;
 			  res.json({ msg: "Login Successfully" });
 			}
 			if(!match){
-			  return res.json({ msg: "failed to login , Incorrect password!!!" });
+			  return res.json({ msg: "failed to login , Incorrect password" });
 			}
 		  })
 		  .catch((err) => {
@@ -135,8 +98,10 @@ exports.login = (req, res, next) => {
   
   exports.logout = (req, res, next) => {
 	req.session.destroy((err) => {
-	  // console.log(err);
+		console.log(req.session);
+	  console.log(err);
 	  res.send({ msg: "Logout Successfully" });
 	});
+
+	
   };
-  

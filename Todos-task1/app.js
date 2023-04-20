@@ -53,11 +53,27 @@ const fileStorageEngine = multer.diskStorage({
         cb(null,'./public')
     },
     filename:(req,file,cb) => {
-        cb(null,Date.now()+"--"+file.originalname);
+        cb(null, new Date().toISOString() + "--"+file.originalname);
     },
 });
 
-const upload   = multer ({storage:fileStorageEngine});
+const fileFilter = (req,file,cb) => {
+    //reject a file 
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null,true);
+    } else {
+        cb(null,false);
+    }
+}
+
+const upload   = multer ({
+    storage:fileStorageEngine,
+     limits:{
+    fileSize: 1024 * 1024 * 5
+ },
+    fileFilter: fileFilter
+});
+
 
 app.use(express.json());
 
@@ -65,7 +81,10 @@ app.use(express.json());
 app.use(session({secret: "secret", resave: false, saveUninitialized: false}));
 
 app.use((req,res,next) => {
-    User.findOne({_id:'643d09ebc5a33f3211af594e'})
+    if(!req.session.user) {
+       return next()
+    }
+    User.findOne({_id: req.session.user._id})
     .then(user => {
         console.log(user);
         req.user = user;

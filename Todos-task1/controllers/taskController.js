@@ -1,7 +1,7 @@
 const Task = require("../models/Task");
 
 exports.getAllTasks =(req,res) => {
-    console.log(req.user);
+    // console.log(req.session.user);
     Task.find().then(tasks => {
         console.log('Tasks fetched')
         res.status(200).json({tasks});
@@ -30,7 +30,7 @@ exports.getTask = (req,res,next) => {
     const { id: taskID } = req.params
     Task.findOne({ _id: taskID }).then(task => {
         if (!task) {
-          return next(createCustomError(`No task with id : ${taskID}`, 404))
+          return res.send(`No task with id : ${taskID}`);
         }
         res.status(200).json({ task })
     }).catch(err => {
@@ -56,11 +56,11 @@ exports.updateTask= async (req,res) => {
 
 exports.deleteTask= async (req,res) => {
     const { id: taskID } = req.params
-    Task.findOneAndDelete({ _id: taskID }).then(task => {
+    Task.deleteOne({ _id: taskID }).then(task => {
         if (!task) {
           return next(createCustomError(`No task with id : ${taskID}`, 404))
         }
-        res.status(200).json({ task })
+        res.status(200).json({ msg: "Task deleted" })
     }).catch(err => {
         console.log(err);
     })
