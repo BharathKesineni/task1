@@ -19,7 +19,7 @@ const Todo = new mongoose.Schema(
       ref: "User",
       required: true
   },
-  taskImage: {type:String, required:true}
+  // taskImage: {type:String, required:true}
   },
   { timestamps: true }
 );

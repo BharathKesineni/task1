@@ -5,13 +5,6 @@ const router = express.Router();
 const taskController = require("../controllers/taskController")
 
 
-// const {
-//   getAllTasks,
-//   createTask,
-//   getTask,
-//   updateTask,
-//   deleteTask
-// } = require('../controllers/taskController')
 
 router.get('/', taskController.getAllTasks);
 
