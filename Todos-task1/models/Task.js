@@ -10,16 +10,19 @@ const Todo = new mongoose.Schema(
       trim: true,
       maxlength: 30,
     },
-    completed:{
-      type:Boolean,
-      default:true
+    taskFile: {
+      type: String,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
-  },
-  // taskImage: {type:String, required:true}
+      required: true,
+    },
+    // taskImage: {type:String, required:true}
   },
   { timestamps: true }
 );

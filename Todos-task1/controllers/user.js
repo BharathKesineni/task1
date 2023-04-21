@@ -59,7 +59,7 @@ exports.login = (req, res, next) => {
 			if (match) {
 			  // req.session.isLogin = true;
 			  req.session.user = user;
-			  res.json({ msg: "succesfully login. " });
+			  res.json({ msg: "succesfully login" });
 			}
 			if(!match){
 			  return res.json({ msg: "failed to login , chech your credentials. whether its correct or not." });
@@ -76,8 +76,8 @@ exports.login = (req, res, next) => {
   
   exports.logout = (req, res, next) => {
 	req.session.destroy((err) => {
-		console.log(req.session);
-	  console.log(err);
+		// console.log(req.session);
+	//   console.log(err);
 	  res.send({ msg: "Logout Successfully" });
 	});
 
