@@ -53,17 +53,24 @@
 
 
 
+const {page, size} = req.query
+if (!page) {
+    page=1
+} 
+if (!size) {
+    size = 10
+}
 
-// const upload = multer({
-//     storage: multer.diskStorage({
-//         destination: function (req, file, cb) {
-//             cb(null,'uploads');
-//         },
-//         filename : function(req,file,cb){
-//             cb(null, file.fieldname+".jpeg")
-//         }
-//     }),
-// }).single("user_file");
+const limit = parseInt(size);
+const skip = (page - 1) * size;
 
-// app.post('/upload',upload,(req,resp)=> {
-//     resp.send('file uploaded')
+
+const users = await user.find().limit(limit).skip(skip);
+
+res.send(tasks);
+
+res.send({
+    page,
+    size,
+    data:tasks
+})

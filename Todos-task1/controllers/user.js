@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 // Load User model
 const User = require('../models/user');
 const {send} = require('../utils/email');
-// const { forwardAuthenticated } = require('../config/auth');
+
 
 
 
