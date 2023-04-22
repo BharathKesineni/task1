@@ -1,4 +1,6 @@
 const Task = require("../models/Task");
+const {send} = require('../utils/email');
+
 
 exports.getAllTasks = (req, res) => {
   // console.log(req.session.user);
@@ -13,6 +15,7 @@ exports.getAllTasks = (req, res) => {
 };
 
 exports.createTask = (req, res) => {
+  email = req.user._doc.email;
   const task = req.body.task;
   taskFile = req.file.filename;
   const newtask = {
@@ -22,7 +25,9 @@ exports.createTask = (req, res) => {
   };
   Task.create(newtask)
     .then((task) => {
-      console.log(task);
+      send(email, "Created a Todo",`Hello user,
+		 successfully created a Todo your taskId:${task._id} your task Name:${task.task}
+			`)
       res.status(201).json({ task });
     })
     .catch((err) => {
