@@ -24,11 +24,7 @@ const taskController = require("./controllers/taskController");
 
 const MongoUrl = "mongodb://127.0.0.1:27017/bharath";
 
-// mongoose.connect(MongoUrl,{
-//     useNewUrlParser:true,
-//     useCreateIndex:true,
-//     useUnifiedTopology:true
-// });
+
 
 const store = new MongoStore({
   uri: MongoUrl,
@@ -78,11 +74,11 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage: fileStorageEngine,
+  fileFilter: fileFilter,
   limits: {
     fileSize: 1024 * 1024 * 5,
   },
-  fileFilter: fileFilter,
-});
+}).single("taskFile");
 
 app.use(express.json());
 
@@ -105,12 +101,8 @@ app.use("/api/tasks", tasksRoutes);
 
 app.use("/api", userRoutes);
 
-app.post("/api/task", upload.single("taskFile"), taskController.createTask);
+app.post("/api/task", upload, taskController.createTask);
 
-app.post("/multiple", upload.array("images", 5), (req, res) => {
-  console.log(req.files);
-  res.send("multiple files uploaded succesfully");
-});
 
 // app.use(authRoutes);
 

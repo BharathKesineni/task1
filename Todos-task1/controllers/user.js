@@ -4,9 +4,7 @@ const bcrypt = require('bcryptjs');
 // Load User model
 const User = require('../models/user');
 const {send} = require('../utils/email');
-
-
-
+const jwt = require("jsonwebtoken");
 
 exports.register = (req, res,next) => {
 	const name = req.body.name;
@@ -14,7 +12,7 @@ exports.register = (req, res,next) => {
 	const password = req.body.password;
 	User.findOne({email: email}).then(user => {
 		if (user) {
-			res.send("E-mail already exists");
+			return res.status(400).json({error:"E-mail already exists"});
 		}
 		bcrypt.hash(password, 12)
 		.then(hashPass => {
@@ -58,8 +56,9 @@ exports.login = (req, res, next) => {
 			// console.log(match);
 			if (match) {
 			  // req.session.isLogin = true;
-			  req.session.user = user;
-			  res.json({ msg: "succesfully login" });
+			//   req.session.user = user;
+			const token = jwt.sign({user},"secretKey",{expiresIn:'300s'})
+			  res.json({ msg: "succesfully login" , jwtToken: token});
 			}
 			if(!match){
 			  return res.json({ msg: "failed to login , chech your credentials. whether its correct or not." });

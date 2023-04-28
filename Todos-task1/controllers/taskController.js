@@ -15,7 +15,9 @@ exports.getAllTasks = (req, res) => {
 };
 
 exports.createTask = (req, res) => {
-  email = req.user._doc.email;
+  // console.log(req.file);
+  console.log(req.user);
+  // email = req.user._doc.email;
   const task = req.body.task;
   taskFile = req.file.filename;
   const newtask = {
@@ -80,11 +82,3 @@ exports.deleteTask = async (req, res) => {
     });
 };
 
-// module.exports= {
-//     getAllTasks,
-//     createTask,
-//     getTask,
-//     updateTask,
-//     deleteTask
-
-// };
