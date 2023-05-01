@@ -1,9 +1,8 @@
 const Task = require("../models/Task");
 const {send} = require('../utils/email');
 
-
 exports.getAllTasks = (req, res) => {
-  // console.log(req.session.user);
+  // console.log(req.user);
   Task.find()
     .then((tasks) => {
       console.log("Tasks fetched");
@@ -15,9 +14,8 @@ exports.getAllTasks = (req, res) => {
 };
 
 exports.createTask = (req, res) => {
-  // console.log(req.file);
-  console.log(req.user);
-  // email = req.user._doc.email;
+  console.log(req.file);
+  const email = req.user.email;
   const task = req.body.task;
   taskFile = req.file.filename;
   const newtask = {

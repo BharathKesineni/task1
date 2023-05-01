@@ -14,7 +14,7 @@ const path = require("path");
 
 const session = require("express-session");
 
-
+const auth = require('./middleware/auth');
 
 const MongoStore = require("connect-mongodb-session")(session);
 
@@ -101,7 +101,7 @@ app.use("/api/tasks", tasksRoutes);
 
 app.use("/api", userRoutes);
 
-app.post("/api/task", upload, taskController.createTask);
+app.post("/api/task",auth, upload, taskController.createTask);
 
 
 // app.use(authRoutes);
