@@ -9,11 +9,8 @@ const userController = require("../controllers/user");
 router.post('/register', userController.register);
 
 
-router.post('/email-verify/:id/:token', userController.userVerification);
+router.post('/email-verify/:id', userController.userVerification);
 
-router.post('/reset-password', userController.resetPasswordEmail)
-
-router.post('/new-password/:id/:token', userController.resetPassword);
 
 router.post('/login', userController.login);
 
