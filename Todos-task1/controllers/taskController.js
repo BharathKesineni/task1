@@ -6,7 +6,7 @@ exports.getAllTasks = (req, res) => {
   Task.find()
     .then((tasks) => {
       console.log("Tasks fetched");
-      res.status(200).json({ tasks });
+      res.status(200).json({ tasks , msg:'Tasks fetched succesfully'});
     })
     .catch((err) => {
       console.log(err);

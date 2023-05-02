@@ -5,20 +5,12 @@ const auth = require("./middleware/auth");
 const taskController = require("./controllers/taskController");
 require("dotenv").config();
 const connect = require("./config/database");
-const upload = require('./utils/upload')
-
+const upload = require("./utils/upload");
 const app = express();
-
-
-
 app.use(express.json());
-
 app.use("/api/tasks", tasksRoutes);
-
 app.use("/api", userRoutes);
-
 app.post("/api/task", auth, upload, taskController.createTask);
-
 
 const start = async () => {
   try {

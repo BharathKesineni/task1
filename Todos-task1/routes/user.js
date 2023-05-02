@@ -1,19 +1,14 @@
-const express = require('express');
-
+const express = require("express");
 const router = express.Router();
-
 const userController = require("../controllers/user");
+const validation = require('../utils/validation')
 
- //Register router with passport package /
- 
-router.post('/register', userController.register);
+router.post("/register", validation.registerValidation,userController.register);
 
+router.post("/email-verify/:id", userController.userVerification);
 
-router.post('/email-verify/:id', userController.userVerification);
+router.post("/login",validation.loginValidation, userController.login);
 
-
-router.post('/login', userController.login);
-
-router.post('/logout', userController.logout);
+router.post("/logout", userController.logout);
 
 module.exports = router;
