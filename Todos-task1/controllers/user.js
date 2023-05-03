@@ -1,3 +1,16 @@
+const {
+  EMAIL_EXISTS,
+  EMAIL_VERIFY,
+  EMAIL_SENT,
+  EMAIL_FAILED,
+  USER_VERIFIED,
+  EMAIL_NOT_REGISTER,
+  USER_VERIFICATION,
+  SUCCESS_LOGIN,
+  FAILED_LOGIN,
+  LOGOUT_SUCCESS
+} = require("../constants/user-msg");
+
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -21,7 +34,7 @@ exports.register = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (user) {
-        return res.status(400).json({ error: "E-mail already exists" });
+        return res.status(400).json({ error: EMAIL_EXISTS });
       }
       bcrypt
         .hash(password, 12)
@@ -44,9 +57,9 @@ exports.register = (req, res, next) => {
 
 				<p> Click <a href="${emailLink}"> here </a>to verify your email</p>`;
 
-          send(email, "Email Verification", text);
+          send(email, EMAIL_VERIFY, text);
           // console.log(user);
-          res.send("Email was sent please verify.");
+          res.send(EMAIL_SENT);
         })
         .catch((err) => {
           console.log(err);
@@ -68,7 +81,7 @@ exports.userVerification = (req, res, next) => {
     .then((verifyUser) => {
       console.log(verifyUser);
       if (!verifyUser) {
-        return res.json({ msg: "Email verification is Failed." });
+        return res.json({ msg: EMAIL_FAILED });
       }
       userEmail = verifyUser._doc.email;
       userPassword = verifyUser.password;
@@ -79,7 +92,7 @@ exports.userVerification = (req, res, next) => {
 	<p>Thank You</p>
   `;
       sendEmail(userEmail, "Email Verification", text);
-      res.json({ msg: "User Verified now you can Login" });
+      res.json({ msg: USER_VERIFIED });
     });
 };
 exports.login = (req, res, next) => {
@@ -96,16 +109,16 @@ exports.login = (req, res, next) => {
     // console.log(user);
     if (!user) {
       return res.json({
-        msg: "email doesnot register. Please register with this mail.",
+        msg: EMAIL_NOT_REGISTER,
       });
     }
     loginUser = user._doc;
 
-      if (!user.isVerified) {
-        return res.json({
-          msg: "User Verification is Required. Please Verify Your Email.",
-        });
-      }
+      // if (!user.isVerified) {
+      //   return res.json({
+      //     msg: USER_VERIFICATION,
+      //   });
+      // }
 
       bcrypt
         .compare(password, user.password)
@@ -115,11 +128,11 @@ exports.login = (req, res, next) => {
             const token = jwt.sign({ loginUser }, "secretkey", {
               expiresIn: "2h",
             });
-            res.json({ msg: "succesfully login", jwtToken: token });
+            res.json({ msg: SUCCESS_LOGIN, jwtToken: token });
           }
           if (!match) {
             return res.json({
-              msg: "failed to login, check your credentials. whether its correct or not.",
+              msg: FAILED_LOGIN,
             });
           }
         })
@@ -139,5 +152,5 @@ exports.logout = (req, res, next) => {
   }
   let token = bearerHeader.split(" ")[1];
 
-  res.send({ msg: "Logout Successfully" });
+  res.send({ msg: LOGOUT_SUCCESS });
 };

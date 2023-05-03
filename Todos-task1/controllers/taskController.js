@@ -1,3 +1,10 @@
+const {
+  TASKS_FETCHED, 
+  CREATED_TODO, 
+  TASK_DELETED,
+
+}= require("../constants/Taskmsg")
+
 const Task = require("../models/Task");
 const {send} = require('../utils/email');
 
@@ -5,8 +12,8 @@ exports.getAllTasks = (req, res) => {
   // console.log(req.user);
   Task.find()
     .then((tasks) => {
-      console.log("Tasks fetched");
-      res.status(200).json({ tasks , msg:'Tasks fetched succesfully'});
+      // console.log("Tasks fetched");
+      res.status(200).json({ tasks , msg: TASKS_FETCHED });
     })
     .catch((err) => {
       console.log(err);
@@ -25,8 +32,7 @@ exports.createTask = (req, res) => {
   };
   Task.create(newtask)
     .then((task) => {
-      send(email, "Created a Todo",`Hello user,
-		 successfully created a Todo your taskId:${task._id} your task Name:${task.task}
+      send(email, CREATED_TODO,`taskId:${task._id} your task Name:${task.task}
 			`)
       res.status(201).json({ task });
     })
@@ -74,7 +80,7 @@ exports.deleteTask = async (req, res) => {
       if (!task) {
         return next(createCustomError(`No task with id : ${taskID}`, 404));
       }
-      res.status(200).json({ msg: "Task deleted" });
+      res.status(200).json({ msg: TASK_DELETED });
     })
     .catch((err) => {
       console.log(err);
