@@ -1,6 +1,7 @@
 const {
   EMAIL_EXISTS,
   EMAIL_VERIFY,
+  EMAIL_REGISTERED,
   EMAIL_SENT,
   EMAIL_FAILED,
   USER_VERIFIED,
@@ -8,7 +9,8 @@ const {
   USER_VERIFICATION,
   SUCCESS_LOGIN,
   FAILED_LOGIN,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  EMAIL_VERIFICATION,
 } = require("../constants/user-msg");
 
 const express = require("express");
@@ -59,7 +61,8 @@ exports.register = (req, res, next) => {
 
           send(email, EMAIL_VERIFY, text);
           // console.log(user);
-          res.send(EMAIL_SENT);
+          // res.send(EMAIL_SENT);
+          res.send(EMAIL_REGISTERED);
         })
         .catch((err) => {
           console.log(err);
@@ -76,7 +79,7 @@ exports.userVerification = (req, res, next) => {
   console.log(userId);
   let userEmail;
   User.findOne({
-    _id: userId
+    _id: userId,
   })
     .then((verifyUser) => {
       console.log(verifyUser);
@@ -91,7 +94,7 @@ exports.userVerification = (req, res, next) => {
       text = `<h1>You Successfully Signedup TODO task.</h1>
 	<p>Thank You</p>
   `;
-      sendEmail(userEmail, "Email Verification", text);
+      sendEmail(userEmail, EMAIL_VERIFICATION, text);
       res.json({ msg: USER_VERIFIED });
     });
 };
@@ -105,14 +108,14 @@ exports.login = (req, res, next) => {
     return res.send(errors.errors[0].msg);
   }
   User.findOne({ email: email })
-  .then((user) => {
-    // console.log(user);
-    if (!user) {
-      return res.json({
-        msg: EMAIL_NOT_REGISTER,
-      });
-    }
-    loginUser = user._doc;
+    .then((user) => {
+      // console.log(user);
+      if (!user) {
+        return res.json({
+          msg: EMAIL_NOT_REGISTER,
+        });
+      }
+      loginUser = user._doc;
 
       // if (!user.isVerified) {
       //   return res.json({

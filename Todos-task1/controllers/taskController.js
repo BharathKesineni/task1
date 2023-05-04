@@ -1,19 +1,18 @@
 const {
-  TASKS_FETCHED, 
-  CREATED_TODO, 
+  TASKS_FETCHED,
+  CREATED_TODO,
   TASK_DELETED,
-
-}= require("../constants/Taskmsg")
+} = require("../constants/Taskmsg");
 
 const Task = require("../models/Task");
-const {send} = require('../utils/email');
+const { send } = require("../utils/email");
 
 exports.getAllTasks = (req, res) => {
   // console.log(req.user);
   Task.find()
     .then((tasks) => {
       // console.log("Tasks fetched");
-      res.status(200).json({ tasks , msg: TASKS_FETCHED });
+      res.status(200).json({ tasks, msg: TASKS_FETCHED });
     })
     .catch((err) => {
       console.log(err);
@@ -32,15 +31,18 @@ exports.createTask = (req, res) => {
   };
   Task.create(newtask)
     .then((task) => {
-      send(email, CREATED_TODO,`taskId:${task._id} your task Name:${task.task}
-			`)
+      send(
+        email,
+        CREATED_TODO,
+        `taskId:${task._id} your task Name:${task.task}
+			`
+      );
       res.status(201).json({ task });
     })
     .catch((err) => {
       console.log(err);
     });
 };
-
 exports.getTask = (req, res, next) => {
   const { id: taskID } = req.params;
   Task.findOne({ _id: taskID })
@@ -61,16 +63,14 @@ exports.updateTask = async (req, res) => {
   Task.findOneAndUpdate({ _id: taskID }, req.body, {
     new: true,
     runValidators: true,
-  })
-    .then((task) => {
-      if (!task) {
-        return next(createCustomError(`No task with id : ${taskID}`, 404));
-      }
-      res.status(200).json({ task });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  }).then((task) => {
+    if (!task) {
+      return next(createCustomError(`No task with id : ${taskID}`, 404));
+    }
+    res.status(200).json({ task });
+  }).catch((err) => {
+    console.log(err);
+  });
 };
 
 exports.deleteTask = async (req, res) => {
@@ -86,4 +86,3 @@ exports.deleteTask = async (req, res) => {
       console.log(err);
     });
 };
-

@@ -11,12 +11,13 @@ app.use(express.json());
 app.use("/api/tasks", tasksRoutes);
 app.use("/api", userRoutes);
 app.post("/api/task", auth, upload, taskController.createTask);
-
+const PORT = process.env.PORT || 4000;
 const start = async () => {
   try {
     await connect();
-    app.listen(4000, () => {
-      console.log("listening on port: 4000");
+
+    app.listen(PORT, () => {
+      console.log(`server running on port ${PORT}`);
     });
   } catch (error) {
     console.error(error);
