@@ -3,7 +3,6 @@ const {
   CREATED_TODO,
   TASK_DELETED,
 } = require("../constants/Taskmsg");
-
 const Task = require("../models/Task");
 const { send } = require("../utils/email");
 
@@ -21,13 +20,13 @@ exports.getAllTasks = (req, res) => {
 
 exports.createTask = (req, res) => {
   console.log(req.file);
-  const email = req.user.email;
+  const email = req.body.email;
   const task = req.body.task;
   taskFile = req.file.filename;
   const newtask = {
     task: task,
     taskFile: taskFile,
-    userId: req.user,
+    // userId: req.user,
   };
   Task.create(newtask)
     .then((task) => {

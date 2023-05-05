@@ -12,7 +12,6 @@ const {
   LOGOUT_SUCCESS,
   EMAIL_VERIFICATION,
 } = require("../constants/user-msg");
-
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");

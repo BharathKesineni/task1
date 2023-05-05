@@ -26,7 +26,7 @@ const upload = multer({
   storage: fileStorageEngine,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1000000,
   },
 }).single("taskFile");
 
